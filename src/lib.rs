@@ -4,14 +4,13 @@
 //!
 //! # Examples
 //! ```
-//! extern crate poolcache;
 //! use poolcache::PoolCache;
 //!
 //! // Create a new pool cache with a maximum 'heat' of 4.
 //! // Larger maxium heat values make popular values more resistent
 //! // to being reused, but at the cost of increasing the potential
 //! // work required to find a re-usable entry.
-//! let cache : PoolCache<u64, Vec<u8>> = PoolCache::new(4);
+//! let mut cache : PoolCache<u64, Vec<u8>> = PoolCache::new(4);
 //!
 //! // Caches are empty until you populate them..`insert` adds a 
 //! // new value associated with a key.
