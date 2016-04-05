@@ -4,22 +4,40 @@
 //!
 //! # Examples
 //! ```
-//! use poolcache::PoolCache
+//! extern crate poolcache;
+//! use poolcache::PoolCache;
 //!
+//! // Create a new pool cache with a maximum 'heat' of 4.
+//! // Larger maxium heat values make popular values more resistent
+//! // to being reused, but at the cost of increasing the potential
+//! // work required to find a re-usable entry.
 //! let cache : PoolCache<u64, Vec<u8>> = PoolCache::new(4);
 //!
-//! // by default, caches are empty until you populate them
-//! cache.put(1, Vec::new());
+//! // Caches are empty until you populate them..`insert` adds a 
+//! // new value associated with a key.
+//! cache.insert(1, Vec::new());
 //!
-//! // `cache` now contains a single vector, associated with
-//! // the key `1`, which can be retrieved with `get`
+//! // `cache` now contains a single vector, associated with the key
+//! // `1`, which can be retrieved with `get`
+//! {
+//!     let vecref : &Vec<u8> = cache.get(&1).unwrap();
+//! }
+//!
+//! // You can also add values that aren't associated with any key with
+//! // `put`. These newly added values will be used to satisfy `take`
+//! // requests before evicting objects with keys.
+//! cache.put(Vec::new());
+//!
+//! // You can get an owned object from the pool using `take`. This will
+//! // use any free objects (if available), or evict the least `hot`
+//! // key from the cache, and return its value.
+//! let ownedvec : Vec<u8> = cache.take().unwrap();
 //! ```
 //!
 
 use std::cell::Cell;
 use std::cmp;
-use std::collections::BTreeMap;
-use std::collections::VecDeque;
+use std::collections::{BTreeMap,VecDeque};
 
 struct CacheEntry<Value> {
     val: Value,
@@ -62,10 +80,13 @@ impl<Key, Value> PoolCache<Key, Value>
                 max_heat: max_heat}
         }
 
+        /// Returns `true` if the given key is present in the cache.
         pub fn contains_key(&self, key: &Key) -> bool {
             self.cache.contains_key(key)
         }
 
+        /// Returns a reference to the value associated with `key`, or `None`
+        /// if the key is not present in the cache.
         pub fn get(&self, key: &Key) -> Option<&Value> {
             self.cache.get(key).and_then(|entry| {
                 entry.inc(self.max_heat);
