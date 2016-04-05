@@ -1,0 +1,6 @@
+[package]
+name = "poolcache"
+version = "0.1.0"
+authors = ["Jon Allie <jon@jonallie.com>"]
+
+[dependencies]
