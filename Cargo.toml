@@ -1,6 +1,11 @@
 [package]
 name = "poolcache"
-version = "0.1.0"
+description = "A hybrid object pool and LFU cache that permits cached object reuse. Useful for avoiding allocations"
+keywords = ["cache", "pool", "buffer"]
+repository = "https://github.com/ja30278/poolcache"
+documentation = "http://ja30278.github.io/rustdoc/poolcache/index.html"
+license = "MIT"
+version = "0.1.1"
 authors = ["Jon Allie <jon@jonallie.com>"]
 
 [dependencies]
